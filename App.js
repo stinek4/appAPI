@@ -11,8 +11,8 @@ const App = () => {
    await fetch(`http://www.boredapi.com/api/activity?participants=1`)
     .then ((response) => response.json())
     .then ((json) => {
-      console.log(json.activity)
-    setActivities([...activities,json.activity])
+      console.log('got activity: ', json.activity)
+    setActivities([json.activity, ...activities])
     })
     .catch(error => 
       console.log(error)
@@ -22,80 +22,48 @@ const App = () => {
     getActivity();
   }, []) 
 
-  const showActivity = async (activity) => {
-    await (
-      {
-        activity: activity,
-        props: {
-          activity: activity
-        }
-      }
-    )
-    console.log(activity)
-  }
-
 
     return(
-      <View style={[styles.safeContainer, css.centered, css.white]}>
-          <View>
+      <View style={styles.main}>
+          <View style={[styles.header, css.centered]}>
             <Text style={styles.coronaWelcome}>Things to do during Corona</Text>
           </View>
-
-          <View style={styles.body}>
-              {
-                activities.map(
-                  (a, index) =>
-                  <View>
-                  <Text key={index}>{a.activity}</Text>
-                  </View>
-                )
-              }
+          <View style={[styles.interaction, css.centered]}>
+            <Button title='Gimme more man..' onPress={()=>getActivity()} />
           </View>
-          
-          <View style={[styles.footer, css.centered]}>
+          <View style={styles.body}>
+            <ScrollView style={styles.scrollView}>
+                {
+                  activities.map(
+                    (a, index) =>
+                      <Activities activity={a} key={index} />
+                  )
+                }
+            </ScrollView>
+          </View>          
+          <View  style={[styles.footer, css.centered]}>
             <Text style={styles.footerText}>+</Text>
             <Text style={styles.footerText}>My List</Text>
-            </View>
+          </View>
       </View>
     )
   }
 
   const styles = StyleSheet.create({
-    safeContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      backgroundColor: '#F5FCFF',
-      padding: 0,
-      margin: 0
+    main:{
+      flex:1,
     },
-    coronaWelcome: {
-      flex: 0.3,
-      fontSize: 30,
-      textAlign: 'center',
-      backgroundColor: '#eddad9',
-      paddingTop: 40,
-      paddingLeft: 30,
-      paddingRight: 30,
+    header:{
+      flex:2,
+      backgroundColor:'#4285F4',
     },
     body: {
       flex: 9,
-      textAlign: 'center',
-      backgroundColor: '#ccc',
-      borderStyle: 'solid',
-      borderColor: '#ccc',
-      borderRadius: 5,
     },
-      footer: {
-      flex: 1,
-      textAlign: 'center',
-      backgroundColor: '#112233',
-      width: '100%',
-      },
-      footerText: {
-        color: 'white'
-      }
+    footer: {
+      flex: 2,
+      backgroundColor:'#e6e6ea',
+    },
   })
 
 
