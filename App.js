@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Modal } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Activities from './components/Activities.js'
@@ -7,34 +7,33 @@ import { css } from './styles/css'
 const App = () => {
   const [activities, setActivities] = useState([0])
 
-  const addActivities = activity => {
-    setActivities([activities])
-  }
-
-  const componentDidMount = async () => {
+  const getActivity = async () => {
    await fetch(`http://www.boredapi.com/api/activity?participants=1`)
     .then ((response) => response.json())
-    .then ((json) => {json.activity})
+    .then ((json) => {
+      console.log(json.activity)
+    setActivities([...activities,json.activity])
+    })
     .catch(error => 
       console.log(error)
       )}
 
-  componentDidMount();
+  useEffect(() => {
+    getActivity();
+  }, []) 
 
   const showActivity = async (activity) => {
     await (
       {
         activity: activity,
         props: {
-          activity: activity,
-          key: key
+          activity: activity
         }
       }
     )
     console.log(activity)
   }
 
-console.log(showActivity)
 
     return(
       <View style={[styles.safeContainer, css.centered, css.white]}>
@@ -42,12 +41,13 @@ console.log(showActivity)
             <Text style={styles.coronaWelcome}>Things to do during Corona</Text>
           </View>
 
-          <View style={[styles.body, css.white]}>
+          <View style={styles.body}>
               {
                 activities.map(
-                  (a) =>
-                  <Activities key={a.key} activity={a.activity} onPress={showActivity(a.activity)}/>
-
+                  (a, index) =>
+                  <View>
+                  <Text key={index}>{a.activity}</Text>
+                  </View>
                 )
               }
           </View>
